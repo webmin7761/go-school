@@ -1,0 +1,26 @@
+{
+    "go.useLanguageServer": true,
+    "go.languageServerExperimentalFeatures": {
+        "diagnostics": true
+    },
+    "go.languageServerFlags": ["-rpc.trace"],
+    "go.buildOnSave": "off",
+    "go.vetOnSave": "off",
+    "go.lintOnSave": "package",
+    "[go]": {
+        "editor.snippetSuggestions": "none",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+    },
+
+    "go.gocodeFlags": [
+        "-builtin",
+        "-ignore-case",
+        "-unimported-packages",
+        "-exclude-docs"
+    ],
+    "go.testFlags": ["-v","-count=1"],
+    //"go.coverOnSingleTest": true
+}
