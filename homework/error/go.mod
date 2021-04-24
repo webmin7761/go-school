@@ -4,5 +4,5 @@ go 1.15
 
 require (
 	github.com/mattn/go-sqlite3 v1.14.7
-	golang.org/x/sys v0.0.0-20210423185535-09eb48e85fd7
+	github.com/prometheus/common v0.21.0
 )
