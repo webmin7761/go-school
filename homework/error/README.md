@@ -30,3 +30,4 @@ dao中的操作是按具体对象来操作的，sql.ErrNoRows是通用说法，�
 ### main.go
 
 > 使用例子
+> `go run github.com/webmin7761/go-school/homework/error`
