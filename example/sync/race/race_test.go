@@ -9,12 +9,13 @@ func TestRace(t *testing.T) {
 	race()
 }
 
+//go test -race -run ^TestLock$
 func TestLock(t *testing.T) {
-	race()
+	raceLock()
 }
 
 func TestAtomic(t *testing.T) {
-	race()
+	raceAtomic()
 }
 
 //go test -bench="BenchmarkRaceLock" -run=none -v
@@ -22,6 +23,7 @@ func BenchmarkRaceLock(b *testing.B) {
 	raceLock()
 }
 
+//go test -bench="BenchmarkRaceAtomic" -run=none -v
 func BenchmarkRaceAtomic(b *testing.B) {
 	raceAtomic()
 }
