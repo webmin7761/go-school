@@ -16,7 +16,11 @@
 
 `https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-sync-primitives/#errgroup`
 
-> 使用例子
-> `go run github.com/webmin7761/go-school/homework/concurrency`
-> <http://localhost:8080/>
-> <http://127.0.0.1:6060/debug/pprof/>
+## 编译
+
+`go run github.com/webmin7761/go-school/homework/concurrency`
+
+## 使用
+
+- <http://localhost:8080/>
+- <http://127.0.0.1:6060/debug/pprof/>
