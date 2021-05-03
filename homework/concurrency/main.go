@@ -39,6 +39,7 @@ func run(ctx context.Context) {
 	log.Println("Stopped")
 }
 
+//处理signal信号
 func newSig(sig ...os.Signal) func(context.Context) error {
 	return func(ctx context.Context) error {
 
@@ -67,6 +68,7 @@ func newSig(sig ...os.Signal) func(context.Context) error {
 	}
 }
 
+//App
 func serverApp(ctx context.Context) error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(resp http.ResponseWriter, req *http.Request) {
@@ -76,6 +78,7 @@ func serverApp(ctx context.Context) error {
 	return server("0.0.0.0:8080", mux, ctx)
 }
 
+//pprof
 func serverDebug(ctx context.Context) error {
 	return server("127.0.0.1:6060", nil, ctx)
 }
@@ -89,7 +92,7 @@ func server(addr string, handler http.Handler, ctx context.Context) error {
 	go func() {
 		<-ctx.Done()
 		log.Printf("%s stopping...\n", addr)
-		s.Shutdown(context.Background())
+		s.Shutdown(ctx)
 	}()
 
 	log.Printf("%s listen\n", addr)
