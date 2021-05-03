@@ -14,31 +14,32 @@ import (
 	_ "net/http/pprof"
 )
 
+type Server func(context.Context) error
+
 func main() {
+	run(context.Background())
+}
 
-	g, ctx := errgroup.WithContext(context.Background())
+func run(ctx context.Context) {
+	g, ctx := errgroup.WithContext(ctx)
 
-	g.Go(func() error {
-		return serverApp(ctx)
-	})
+	servers := []Server{serverApp, serverDebug, newSig()}
 
-	g.Go(func() error {
-		return serverDebug(ctx)
-	})
-
-	g.Go(func() error {
-		return NewSig()(ctx)
-	})
-
-	log.Println("Started")
+	for _, f := range servers {
+		svr := f
+		g.Go(func() error {
+			return svr(ctx)
+		})
+	}
 
 	if err := g.Wait(); err != nil {
 		log.Printf("error: %v\n", err)
 	}
+
 	log.Println("Stopped")
 }
 
-func NewSig(sig ...os.Signal) func(context.Context) error {
+func newSig(sig ...os.Signal) func(context.Context) error {
 	return func(ctx context.Context) error {
 
 		if len(sig) == 0 {
@@ -47,6 +48,8 @@ func NewSig(sig ...os.Signal) func(context.Context) error {
 
 		done := make(chan os.Signal, len(sig))
 		signal.Notify(done, sig...)
+
+		log.Println("signal process started")
 
 		var err error
 		select {
@@ -57,6 +60,9 @@ func NewSig(sig ...os.Signal) func(context.Context) error {
 
 		signal.Stop(done)
 		close(done)
+
+		log.Printf("signal process stopped\n")
+
 		return err
 	}
 }
@@ -86,5 +92,6 @@ func server(addr string, handler http.Handler, ctx context.Context) error {
 		s.Shutdown(context.Background())
 	}()
 
+	log.Printf("%s listen\n", addr)
 	return s.ListenAndServe()
 }

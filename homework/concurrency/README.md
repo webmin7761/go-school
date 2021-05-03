@@ -10,6 +10,12 @@
 
 2. 何时以及怎么关闭http server
 
+## TODO
+
+1. [x] 重构代码
+
+2. [x] 增加单元测试
+
 ## 参考
 
 `https://github.com/da440dil/go-workgroup/blob/master/template/signal/signal.go`
