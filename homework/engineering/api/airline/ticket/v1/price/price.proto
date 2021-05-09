@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+package price;
+
+option go_package = "./;price";
+
+//机票价格服务
+service PriceService {
+    //机票销售价格计算
+    rpc Pricing (PricingRequest) returns (PricingResponse){}
+}
+
+enum PassageTypes {
+    ADT = 0;    //成人
+    CHD = 1;    //儿童
+    INF = 2;    //婴儿
+}
+
+enum ServiceLevel {
+    First = 0;  //头等
+    Business = 1;   //公务
+    Economy = 2;    //经济
+}
+
+//机票销售价格计算请求
+message PricingRequest {
+    //起飞机场
+    string org_airport = 1;
+    //到达机场
+    string arr_airport = 2;
+    //航班日期
+    google.protobuf.Timestamp flight_datetime = 3;
+    //乘客类型
+    PassageTypes passage_type = 4;
+    //舱位等级
+    ServiceLevel service_level = 5;
+}
+
+//机票销售价格计算结果
+message PricingResponse {
+    //起飞机场
+    string org_airport = 1;
+    //到达机场
+    string arr_airport = 2;
+    //航班日期
+    google.protobuf.Timestamp flight_datetime = 3;
+    //乘客类型
+    PassageTypes passage_type = 4;
+    //舱位等级
+    ServiceLevel service_level = 5;
+    //机场价格
+    google.protobuf.DoubleValue price = 6;
+    //退票规则信息
+    string refund_info = 7;
+    //变更规则信息
+    string change_info = 8;
+}
