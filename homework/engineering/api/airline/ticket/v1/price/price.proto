@@ -25,6 +25,13 @@ enum ServiceLevel {
     Economy = 2;    //经济
 }
 
+message Result {
+    //0 - 成功，其它 - 失败
+    string code = 1;
+    //失败信息
+    string message = 2;
+}
+
 //机票销售价格计算请求
 message PricingRequest {
     //起飞机场
@@ -35,26 +42,20 @@ message PricingRequest {
     google.protobuf.Timestamp flight_datetime = 3;
     //乘客类型
     PassageTypes passage_type = 4;
-    //舱位等级
-    ServiceLevel service_level = 5;
 }
 
 //机票销售价格计算结果
 message PricingResponse {
+    //处理结果
+    Result result = 1;
     //起飞机场
-    string org_airport = 1;
+    string org_airport = 2;
     //到达机场
-    string arr_airport = 2;
+    string arr_airport = 3;
     //航班日期
-    google.protobuf.Timestamp flight_datetime = 3;
+    google.protobuf.Timestamp flight_datetime = 4;
     //乘客类型
-    PassageTypes passage_type = 4;
-    //舱位等级
-    ServiceLevel service_level = 5;
-    //机场价格
-    google.protobuf.DoubleValue price = 6;
-    //退票规则信息
-    string refund_info = 7;
-    //变更规则信息
-    string change_info = 8;
+    PassageTypes passage_type = 5;
+    //价格
+    google.protobuf.DoubleValue amount = 6;
 }

@@ -45,3 +45,9 @@ go get -u github.com/golang/protobuf/protoc-gen-go-grpc
 
 protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --proto_path=d:/protobuf -I=. price.proto
 ```
+
+## ent
+
+1. 生成结构 User 于 `<project>/ent/schema/` 目录内 `ent init User`
+
+2. 生成对DB的各种操作`ent generate ./ent/schema`
