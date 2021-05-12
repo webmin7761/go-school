@@ -6,6 +6,8 @@ require (
 	entgo.io/ent v0.8.0
 	github.com/go-kratos/kratos/v2 v2.0.0-beta4
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/wire v0.5.0
+	github.com/mattn/go-sqlite3 v1.14.6
 	google.golang.org/grpc v1.35.0
 	google.golang.org/protobuf v1.26.0
 )

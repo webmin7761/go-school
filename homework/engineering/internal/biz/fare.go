@@ -21,8 +21,8 @@ type Fare struct {
 
 type FareRepo interface {
 	// db
-	GetArticle(ctx context.Context, id int64) (*Fare, error)
-	CreateArticle(ctx context.Context, fare *Fare) error
+	GetFare(ctx context.Context, fare *Fare) (*Fare, error)
+	CreateFare(ctx context.Context, fare *Fare) error
 	UpdateFare(ctx context.Context, id int64, fare *Fare) error
 	DeleteFare(ctx context.Context, id int64) error
 }
