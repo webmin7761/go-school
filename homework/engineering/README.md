@@ -41,9 +41,13 @@ go get -u github.com/golang/protobuf
 
 go get -u github.com/golang/protobuf/protoc-gen-go
 
-go get -u github.com/golang/protobuf/protoc-gen-go-grpc
+go get -u github.com/lazada/protoc-gen-go-http
 
-protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --proto_path=d:/protobuf -I=. price.proto
+go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
+
+protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-http_out=. --proto_path=d:/protobuf -I=. price.proto
+
+kratos proto client price.proto --proto_path=d:/protobuf -I=.
 ```
 
 ## ent

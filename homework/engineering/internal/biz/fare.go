@@ -35,13 +35,13 @@ func NewFareUsecase(repo FareRepo, logger log.Logger) *FareUsecase {
 	return &FareUsecase{repo: repo}
 }
 
-func (uc *FareUsecase) Get(ctx context.Context, id int64) (p *Fare, err error) {
-	p, err = uc.repo.GetArticle(ctx, id)
+func (uc *FareUsecase) Get(ctx context.Context, fare *Fare) (p *Fare, err error) {
+	p, err = uc.repo.GetFare(ctx, fare)
 	return
 }
 
 func (uc *FareUsecase) Create(ctx context.Context, fare *Fare) error {
-	return uc.repo.CreateArticle(ctx, fare)
+	return uc.repo.CreateFare(ctx, fare)
 }
 
 func (uc *FareUsecase) Update(ctx context.Context, id int64, fare *Fare) error {
