@@ -22,7 +22,7 @@ func NewFareRepo(data *Data, logger log.Logger) biz.FareRepo {
 	}
 }
 
-func (ar *fareRepo) GetFare(ctx context.Context, bizFare *biz.Fare) (*biz.Fare, error) {
+func (ar *fareRepo) PricingFare(ctx context.Context, bizFare *biz.Fare) (*biz.Fare, error) {
 	p, err := ar.data.db.Fare.
 		Query().
 		Where(

@@ -7,14 +7,14 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	v1 "github.com/webmin7761/go-school/homework/engineering/api/price/v1"
+	v1 "github.com/webmin7761/go-school/homework/engineering/api/fare/v1"
 	"github.com/webmin7761/go-school/homework/engineering/internal/conf"
 	"github.com/webmin7761/go-school/homework/engineering/internal/service"
 	"go.opentelemetry.io/otel/trace"
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, tracer trace.TracerProvider, price *service.PriceService) *http.Server {
+func NewHTTPServer(c *conf.Server, tracer trace.TracerProvider, fare *service.FareService) *http.Server {
 	var opts []http.ServerOption
 	if c.Http.Network != "" {
 		opts = append(opts, http.Network(c.Http.Network))
@@ -33,6 +33,6 @@ func NewHTTPServer(c *conf.Server, tracer trace.TracerProvider, price *service.P
 		),
 	)
 	srv := http.NewServer(opts...)
-	srv.HandlePrefix("/", v1.NewPriceServiceHandler(price, m))
+	srv.HandlePrefix("/", v1.NewFareServiceHandler(fare, m))
 	return srv
 }
