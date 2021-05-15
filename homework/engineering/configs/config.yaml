@@ -7,5 +7,5 @@ server:
     timeout: 1s
 data:
   database:
-    driver: sqlite
-    source: file:ent?mode=memory&cache=shared&_fk=1
+    driver: sqlite3
+    source: ./foo.db?mode=memory&cache=shared&_fk=1

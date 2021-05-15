@@ -49,11 +49,11 @@ func (s *FareService) DeleteFare(ctx context.Context, req *pb.DeleteFareRequest)
 	return &pb.DeleteFareReply{}, err
 }
 
-func (s *FareService) PricingFare(ctx context.Context, req *pb.PricingRequest) (*pb.PricingResponse, error) {
+func (s *FareService) Pricing(ctx context.Context, req *pb.PricingRequest) (*pb.PricingResponse, error) {
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "PricingFare")
 	defer span.End()
-	p, err := s.fare.Get(ctx, &biz.Fare{
+	p, err := s.fare.Pricing(ctx, &biz.Fare{
 		OrgAirport:      req.OrgAirport,
 		ArrAirport:      req.ArrAirport,
 		PassageType:     req.PassageType.String(),

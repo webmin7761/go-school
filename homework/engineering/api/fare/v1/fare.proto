@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 package fare;
 
@@ -10,13 +11,32 @@ option go_package = "./;fare";
 //机票价格服务
 service FareService {
     //新建运价
-    rpc CreateFare(CreateFareRequest) returns (CreateFareReply){}
+    rpc CreateFare(CreateFareRequest) returns (CreateFareReply){
+        option (google.api.http) = {
+            post: "/v1/fare/"
+            body: "*"
+        };        
+    }
     //删除运价
-    rpc UpdateFare(UpdateFareRequest) returns (UpdateFareReply){}      
+    rpc UpdateFare(UpdateFareRequest) returns (UpdateFareReply){
+        option (google.api.http) = {
+            put: "/v1/fare/{id}"
+            body: "*"
+        };
+    }      
     //删除运价
-    rpc DeleteFare(DeleteFareRequest) returns (DeleteFareReply){}    
+    rpc DeleteFare(DeleteFareRequest) returns (DeleteFareReply){
+        option (google.api.http) = {
+            delete: "/v1/fare/{id}"
+        };
+    }    
     //机票销售价格计算
-    rpc Pricing (PricingRequest) returns (PricingResponse){}
+    rpc Pricing (PricingRequest) returns (PricingResponse){
+        option (google.api.http) = {
+            post: "/v1/fare/pricing"
+            body: "*"
+        };
+    }
 }
 
 enum PassageTypes {

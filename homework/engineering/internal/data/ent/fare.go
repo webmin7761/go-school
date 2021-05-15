@@ -102,7 +102,7 @@ func (f *Fare) assignValues(columns []string, values []interface{}) error {
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field amount", values[i])
 			} else if value.Valid {
-				f.Amount = value.Float64
+				f.Amount = float64(value.Float64)
 			}
 		case fare.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {

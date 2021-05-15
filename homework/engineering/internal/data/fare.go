@@ -5,7 +5,9 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/pkg/errors"
 	"github.com/webmin7761/go-school/homework/engineering/internal/biz"
+	"github.com/webmin7761/go-school/homework/engineering/internal/data/ent"
 	"github.com/webmin7761/go-school/homework/engineering/internal/data/ent/fare"
 )
 
@@ -22,13 +24,13 @@ func NewFareRepo(data *Data, logger log.Logger) biz.FareRepo {
 	}
 }
 
-func (ar *fareRepo) PricingFare(ctx context.Context, bizFare *biz.Fare) (*biz.Fare, error) {
+func (ar *fareRepo) Pricing(ctx context.Context, bizFare *biz.Fare) (*biz.Fare, error) {
 	p, err := ar.data.db.Fare.
 		Query().
 		Where(
 			fare.And(
-				fare.FirstTravelDateGT(bizFare.FirstTravelDate),
-				fare.LastTravelDateLT(bizFare.LastTravelDate),
+				fare.FirstTravelDateLTE(bizFare.FirstTravelDate),
+				fare.LastTravelDateGTE(bizFare.LastTravelDate),
 				fare.OrgAirportEQ(bizFare.OrgAirport),
 				fare.ArrAirportEQ(bizFare.ArrAirport),
 				fare.PassageTypeEQ(bizFare.PassageType))).
@@ -51,7 +53,17 @@ func (ar *fareRepo) PricingFare(ctx context.Context, bizFare *biz.Fare) (*biz.Fa
 }
 
 func (ar *fareRepo) CreateFare(ctx context.Context, fare *biz.Fare) error {
-	_, err := ar.data.db.Fare.
+
+	p, err := ar.Pricing(ctx, fare)
+	if err != nil && !ent.IsNotFound(err) {
+		return err
+	}
+
+	if p != nil {
+		return errors.New("data: create to fare error")
+	}
+
+	_, err = ar.data.db.Fare.
 		Create().
 		SetOrgAirport(fare.OrgAirport).
 		SetArrAirport(fare.ArrAirport).

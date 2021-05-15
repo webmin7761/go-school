@@ -31,8 +31,9 @@ func (Fare) Fields() []ent.Field {
 			dialect.MySQL:  "datetime",
 		}),
 		field.Float("amount").
+			GoType(float64(0)).
 			SchemaType(map[string]string{
-				dialect.SQLite: "decimal(6,2)",
+				dialect.SQLite: "double",
 				dialect.MySQL:  "decimal(6,2)",
 			}),
 		field.Time("created_at").

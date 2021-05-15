@@ -36,7 +36,7 @@ func NewFareServiceHandler(srv FareServiceHandler, opts ...http1.HandleOption) h
 	}
 	r := mux.NewRouter()
 
-	r.HandleFunc("/fare.FareService/CreateFare", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/fare/", func(w http.ResponseWriter, r *http.Request) {
 		var in CreateFareRequest
 		if err := h.Decode(r, &in); err != nil {
 			h.Error(w, r, err)
@@ -60,9 +60,14 @@ func NewFareServiceHandler(srv FareServiceHandler, opts ...http1.HandleOption) h
 		}
 	}).Methods("POST")
 
-	r.HandleFunc("/fare.FareService/UpdateFare", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/fare/{id}", func(w http.ResponseWriter, r *http.Request) {
 		var in UpdateFareRequest
 		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -82,11 +87,16 @@ func NewFareServiceHandler(srv FareServiceHandler, opts ...http1.HandleOption) h
 		if err := h.Encode(w, r, reply); err != nil {
 			h.Error(w, r, err)
 		}
-	}).Methods("POST")
+	}).Methods("PUT")
 
-	r.HandleFunc("/fare.FareService/DeleteFare", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/fare/{id}", func(w http.ResponseWriter, r *http.Request) {
 		var in DeleteFareRequest
 		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -106,9 +116,9 @@ func NewFareServiceHandler(srv FareServiceHandler, opts ...http1.HandleOption) h
 		if err := h.Encode(w, r, reply); err != nil {
 			h.Error(w, r, err)
 		}
-	}).Methods("POST")
+	}).Methods("DELETE")
 
-	r.HandleFunc("/fare.FareService/Pricing", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/fare/pricing", func(w http.ResponseWriter, r *http.Request) {
 		var in PricingRequest
 		if err := h.Decode(r, &in); err != nil {
 			h.Error(w, r, err)

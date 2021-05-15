@@ -129,8 +129,9 @@ func LastTravelDate(v time.Time) predicate.Fare {
 
 // Amount applies equality check predicate on the "amount" field. It's identical to AmountEQ.
 func Amount(v float64) predicate.Fare {
+	vc := float64(v)
 	return predicate.Fare(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAmount), v))
+		s.Where(sql.EQ(s.C(FieldAmount), vc))
 	})
 }
 
@@ -635,15 +636,17 @@ func LastTravelDateLTE(v time.Time) predicate.Fare {
 
 // AmountEQ applies the EQ predicate on the "amount" field.
 func AmountEQ(v float64) predicate.Fare {
+	vc := float64(v)
 	return predicate.Fare(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAmount), v))
+		s.Where(sql.EQ(s.C(FieldAmount), vc))
 	})
 }
 
 // AmountNEQ applies the NEQ predicate on the "amount" field.
 func AmountNEQ(v float64) predicate.Fare {
+	vc := float64(v)
 	return predicate.Fare(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldAmount), v))
+		s.Where(sql.NEQ(s.C(FieldAmount), vc))
 	})
 }
 
@@ -651,7 +654,7 @@ func AmountNEQ(v float64) predicate.Fare {
 func AmountIn(vs ...float64) predicate.Fare {
 	v := make([]interface{}, len(vs))
 	for i := range v {
-		v[i] = vs[i]
+		v[i] = float64(vs[i])
 	}
 	return predicate.Fare(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
@@ -668,7 +671,7 @@ func AmountIn(vs ...float64) predicate.Fare {
 func AmountNotIn(vs ...float64) predicate.Fare {
 	v := make([]interface{}, len(vs))
 	for i := range v {
-		v[i] = vs[i]
+		v[i] = float64(vs[i])
 	}
 	return predicate.Fare(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
@@ -683,29 +686,33 @@ func AmountNotIn(vs ...float64) predicate.Fare {
 
 // AmountGT applies the GT predicate on the "amount" field.
 func AmountGT(v float64) predicate.Fare {
+	vc := float64(v)
 	return predicate.Fare(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldAmount), v))
+		s.Where(sql.GT(s.C(FieldAmount), vc))
 	})
 }
 
 // AmountGTE applies the GTE predicate on the "amount" field.
 func AmountGTE(v float64) predicate.Fare {
+	vc := float64(v)
 	return predicate.Fare(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldAmount), v))
+		s.Where(sql.GTE(s.C(FieldAmount), vc))
 	})
 }
 
 // AmountLT applies the LT predicate on the "amount" field.
 func AmountLT(v float64) predicate.Fare {
+	vc := float64(v)
 	return predicate.Fare(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldAmount), v))
+		s.Where(sql.LT(s.C(FieldAmount), vc))
 	})
 }
 
 // AmountLTE applies the LTE predicate on the "amount" field.
 func AmountLTE(v float64) predicate.Fare {
+	vc := float64(v)
 	return predicate.Fare(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldAmount), v))
+		s.Where(sql.LTE(s.C(FieldAmount), vc))
 	})
 }
 

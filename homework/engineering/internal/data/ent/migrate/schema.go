@@ -16,7 +16,7 @@ var (
 		{Name: "passage_type", Type: field.TypeString},
 		{Name: "first_travel_date", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "sqlite3": "datetime"}},
 		{Name: "last_travel_date", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "sqlite3": "datetime"}},
-		{Name: "amount", Type: field.TypeFloat64, SchemaType: map[string]string{"mysql": "decimal(6,2)", "sqlite3": "decimal(6,2)"}},
+		{Name: "amount", Type: field.TypeFloat64, SchemaType: map[string]string{"mysql": "decimal(6,2)", "sqlite3": "double"}},
 		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "sqlite3": "datetime"}},
 		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "sqlite3": "datetime"}},
 	}

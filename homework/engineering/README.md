@@ -47,7 +47,10 @@ go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-http_out=. --proto_path=d:/protobuf -I=. price.proto
 
-kratos proto client price.proto --proto_path=d:/protobuf -I=.
+cd go-school\homework\engineering\api\fare\v1
+kratos proto client fare.proto --proto_path=../../../third_party -I=.
+
+go build github.com/webmin7761/go-school/homework/engineering/cmd/fare
 ```
 
 ## ent
