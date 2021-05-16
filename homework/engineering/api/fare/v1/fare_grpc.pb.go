@@ -24,6 +24,8 @@ type FareServiceClient interface {
 	UpdateFare(ctx context.Context, in *UpdateFareRequest, opts ...grpc.CallOption) (*UpdateFareReply, error)
 	//删除运价
 	DeleteFare(ctx context.Context, in *DeleteFareRequest, opts ...grpc.CallOption) (*DeleteFareReply, error)
+	//删除运价
+	GetFare(ctx context.Context, in *GetFareRequest, opts ...grpc.CallOption) (*GetFareReply, error)
 	//机票销售价格计算
 	Pricing(ctx context.Context, in *PricingRequest, opts ...grpc.CallOption) (*PricingResponse, error)
 }
@@ -63,6 +65,15 @@ func (c *fareServiceClient) DeleteFare(ctx context.Context, in *DeleteFareReques
 	return out, nil
 }
 
+func (c *fareServiceClient) GetFare(ctx context.Context, in *GetFareRequest, opts ...grpc.CallOption) (*GetFareReply, error) {
+	out := new(GetFareReply)
+	err := c.cc.Invoke(ctx, "/fare.FareService/GetFare", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *fareServiceClient) Pricing(ctx context.Context, in *PricingRequest, opts ...grpc.CallOption) (*PricingResponse, error) {
 	out := new(PricingResponse)
 	err := c.cc.Invoke(ctx, "/fare.FareService/Pricing", in, out, opts...)
@@ -82,6 +93,8 @@ type FareServiceServer interface {
 	UpdateFare(context.Context, *UpdateFareRequest) (*UpdateFareReply, error)
 	//删除运价
 	DeleteFare(context.Context, *DeleteFareRequest) (*DeleteFareReply, error)
+	//删除运价
+	GetFare(context.Context, *GetFareRequest) (*GetFareReply, error)
 	//机票销售价格计算
 	Pricing(context.Context, *PricingRequest) (*PricingResponse, error)
 	mustEmbedUnimplementedFareServiceServer()
@@ -99,6 +112,9 @@ func (UnimplementedFareServiceServer) UpdateFare(context.Context, *UpdateFareReq
 }
 func (UnimplementedFareServiceServer) DeleteFare(context.Context, *DeleteFareRequest) (*DeleteFareReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteFare not implemented")
+}
+func (UnimplementedFareServiceServer) GetFare(context.Context, *GetFareRequest) (*GetFareReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFare not implemented")
 }
 func (UnimplementedFareServiceServer) Pricing(context.Context, *PricingRequest) (*PricingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Pricing not implemented")
@@ -170,6 +186,24 @@ func _FareService_DeleteFare_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FareService_GetFare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFareRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FareServiceServer).GetFare(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/fare.FareService/GetFare",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FareServiceServer).GetFare(ctx, req.(*GetFareRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FareService_Pricing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PricingRequest)
 	if err := dec(in); err != nil {
@@ -206,6 +240,10 @@ var FareService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteFare",
 			Handler:    _FareService_DeleteFare_Handler,
+		},
+		{
+			MethodName: "GetFare",
+			Handler:    _FareService_GetFare_Handler,
 		},
 		{
 			MethodName: "Pricing",

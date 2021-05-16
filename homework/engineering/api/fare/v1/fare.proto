@@ -30,6 +30,12 @@ service FareService {
             delete: "/v1/fare/{id}"
         };
     }    
+    //删除运价
+    rpc GetFare(GetFareRequest) returns (GetFareReply){
+        option (google.api.http) = {
+            get: "/v1/fare/{id}"
+        };
+    }
     //机票销售价格计算
     rpc Pricing (PricingRequest) returns (PricingResponse){
         option (google.api.http) = {
@@ -40,15 +46,17 @@ service FareService {
 }
 
 enum PassageTypes {
-    ADT = 0;    //成人
-    CHD = 1;    //儿童
-    INF = 2;    //婴儿
+    PT = 0;
+    ADT = 1;    //成人
+    CHD = 2;    //儿童
+    INF = 3;    //婴儿
 }
 
 enum ServiceLevel {
-    First = 0;  //头等
-    Business = 1;   //公务
-    Economy = 2;    //经济
+    SL = 0;
+    First = 1;  //头等
+    Business = 2;   //公务
+    Economy = 3;    //经济
 }
 
 message Result {
@@ -81,6 +89,7 @@ message CreateFareRequest{
 message CreateFareReply {
     //处理结果
     Result result = 1;
+    int64 id = 2;
 }
 
 message UpdateFareRequest {
@@ -94,7 +103,18 @@ message UpdateFareReply {
 message DeleteFareRequest {
     int64 id = 1;
 }
+
 message DeleteFareReply {
+}
+
+message GetFareRequest {
+    int64 id = 1;
+}
+
+message GetFareReply {
+    //处理结果
+    Result result = 1;    
+    Fare fare = 2;
 }
 
 //机票销售价格计算请求

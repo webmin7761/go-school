@@ -22,8 +22,9 @@ type Fare struct {
 type FareRepo interface {
 	// db
 	Pricing(ctx context.Context, fare *Fare) (*Fare, error)
-	CreateFare(ctx context.Context, fare *Fare) error
+	CreateFare(ctx context.Context, fare *Fare) (int64, error)
 	UpdateFare(ctx context.Context, id int64, fare *Fare) error
+	GetFare(ctx context.Context, id int64) (*Fare, error)
 	DeleteFare(ctx context.Context, id int64) error
 }
 
@@ -40,12 +41,16 @@ func (uc *FareUsecase) Pricing(ctx context.Context, fare *Fare) (p *Fare, err er
 	return
 }
 
-func (uc *FareUsecase) Create(ctx context.Context, fare *Fare) error {
+func (uc *FareUsecase) Create(ctx context.Context, fare *Fare) (int64, error) {
 	return uc.repo.CreateFare(ctx, fare)
 }
 
 func (uc *FareUsecase) Update(ctx context.Context, id int64, fare *Fare) error {
 	return uc.repo.UpdateFare(ctx, id, fare)
+}
+
+func (uc *FareUsecase) Get(ctx context.Context, id int64) (*Fare, error) {
+	return uc.repo.GetFare(ctx, id)
 }
 
 func (uc *FareUsecase) Delete(ctx context.Context, id int64) error {

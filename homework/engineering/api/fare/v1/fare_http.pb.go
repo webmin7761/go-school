@@ -24,6 +24,8 @@ type FareServiceHandler interface {
 
 	DeleteFare(context.Context, *DeleteFareRequest) (*DeleteFareReply, error)
 
+	GetFare(context.Context, *GetFareRequest) (*GetFareReply, error)
+
 	Pricing(context.Context, *PricingRequest) (*PricingResponse, error)
 
 	UpdateFare(context.Context, *UpdateFareRequest) (*UpdateFareReply, error)
@@ -117,6 +119,35 @@ func NewFareServiceHandler(srv FareServiceHandler, opts ...http1.HandleOption) h
 			h.Error(w, r, err)
 		}
 	}).Methods("DELETE")
+
+	r.HandleFunc("/v1/fare/{id}", func(w http.ResponseWriter, r *http.Request) {
+		var in GetFareRequest
+		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		next := func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetFare(ctx, req.(*GetFareRequest))
+		}
+		if h.Middleware != nil {
+			next = h.Middleware(next)
+		}
+		out, err := next(r.Context(), &in)
+		if err != nil {
+			h.Error(w, r, err)
+			return
+		}
+		reply := out.(*GetFareReply)
+		if err := h.Encode(w, r, reply); err != nil {
+			h.Error(w, r, err)
+		}
+	}).Methods("GET")
 
 	r.HandleFunc("/v1/fare/pricing", func(w http.ResponseWriter, r *http.Request) {
 		var in PricingRequest

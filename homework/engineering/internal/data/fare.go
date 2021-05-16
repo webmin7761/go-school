@@ -52,18 +52,18 @@ func (ar *fareRepo) Pricing(ctx context.Context, bizFare *biz.Fare) (*biz.Fare, 
 	}, nil
 }
 
-func (ar *fareRepo) CreateFare(ctx context.Context, fare *biz.Fare) error {
+func (ar *fareRepo) CreateFare(ctx context.Context, fare *biz.Fare) (int64, error) {
 
 	p, err := ar.Pricing(ctx, fare)
 	if err != nil && !ent.IsNotFound(err) {
-		return err
+		return -1, err
 	}
 
 	if p != nil {
-		return errors.New("data: create to fare error")
+		return -1, errors.New("data: create to fare error")
 	}
 
-	_, err = ar.data.db.Fare.
+	r, err := ar.data.db.Fare.
 		Create().
 		SetOrgAirport(fare.OrgAirport).
 		SetArrAirport(fare.ArrAirport).
@@ -72,7 +72,10 @@ func (ar *fareRepo) CreateFare(ctx context.Context, fare *biz.Fare) error {
 		SetLastTravelDate(fare.LastTravelDate).
 		SetAmount(fare.Amount).
 		Save(ctx)
-	return err
+	if err != nil {
+		return -1, err
+	}
+	return r.ID, nil
 }
 
 func (ar *fareRepo) UpdateFare(ctx context.Context, id int64, fare *biz.Fare) error {
@@ -90,6 +93,25 @@ func (ar *fareRepo) UpdateFare(ctx context.Context, id int64, fare *biz.Fare) er
 		SetUpdatedAt(time.Now()).
 		Save(ctx)
 	return err
+}
+
+func (ar *fareRepo) GetFare(ctx context.Context, id int64) (*biz.Fare, error) {
+	p, err := ar.data.db.Fare.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &biz.Fare{
+		Id:              p.ID,
+		OrgAirport:      p.OrgAirport,
+		ArrAirport:      p.ArrAirport,
+		PassageType:     p.PassageType,
+		FirstTravelDate: p.FirstTravelDate,
+		LastTravelDate:  p.LastTravelDate,
+		Amount:          p.Amount,
+		CreatedAt:       p.CreatedAt,
+		UpdatedAt:       p.UpdatedAt,
+	}, nil
 }
 
 func (ar *fareRepo) DeleteFare(ctx context.Context, id int64) error {
