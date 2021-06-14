@@ -48,15 +48,15 @@ Requests|ValueSize|memory(jemalloc)|avg(jemalloc)|memory(libc)|avg(libc)
 
 3. 以上两条并不能得出value size大小对jemalloc和libc分配内存存在标准阈值，还需要先从两者的分配算法原理以出发进行比较甄别；
 
-4. 从上述平均内存占用可以看出,实际占用内存与value size的存在固定大小的差值
+4. 从上述平均内存占用可以看出,实际占用内存与value size的大小存在固定大小的差值
 
-- 从benchmark的帮助中可以看出key是一个12位数字，那么key需要占用掉8个byte
+   - 从benchmark的帮助中可以看出key是一个12位数字，那么key需要占用掉8个byte
 
-- 通过学习redis得知一个key和value时在redis中需要使用一个RedsiObject来保存，对于字符串这个16+字符串大小
+   - 通过学习redis的内部数据结构得知，在保存key或value时，在redis中需要使用RedsiObject这个结构来保存，对于字符串来说需要占用16 byte+字符串大小的内存
 
-- 保存key的hash本身也要使用内存24 byte内存分配的原因实际占用32字节
+   - 保存key的hash表本身也要使用24个byte内存，再由于内存分配器的原因实际要占用32byte
 
-- (key = 8 + 8) + (value = 16 + valueSize) + (hash entry = 32) = 64 + valueSize + 内存分配器多占用掉的
+   - (key = 8 + 8) + (value = 16 + valueSize) + (hash entry = 32) = 64 + valueSize + 内存分配器因为倍数分配内存多占用掉的
 
 ## 监控
 
