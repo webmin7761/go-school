@@ -44,7 +44,7 @@ Requests|ValueSize|Set req/sec(jemalloc)|Get req/sec(jemalloc)|Set req/sec(libc)
 - jemalloc的效率与value size程反比趋势
 - libc效率程现出一种波浪抖动态势
 - value size在10~100 jemalloc方式set、get都比libc效率高
-- value size在200~5120 libc方式set、get都比jemalloc效率高
+- value size在200~5120 libc方式set、get都比jemalloc效率高（5120时jemalloc的get效率与libc比较接近）
 
 ## 写入内存分析 - 测试结果
 
