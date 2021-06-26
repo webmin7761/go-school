@@ -75,3 +75,9 @@
 ![lengthFieldBasedFrame](./img/lengthFieldBasedFrame.png)
 
 ## goim协议的解码器说明
+
+### goim协议图示
+
+![goim](./img/GoIM.png)
+
+>>> 上图通过[goim代码](https://github.com/Terry-Mao/goim/blob/e742c99ad7/api/protocol/protocol.go)得到
