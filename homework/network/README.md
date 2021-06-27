@@ -80,4 +80,35 @@
 
 ![goim](./img/GoIM.png)
 
->>> 上图通过[goim代码](https://github.com/Terry-Mao/goim/blob/e742c99ad7/api/protocol/protocol.go)得到
+>>> goim协议根据[goim协议代码](https://github.com/Terry-Mao/goim/blob/e742c99ad7/api/protocol/protocol.go)得到
+
+### 代码说明
+
+1. `protocol.go`
+    - 协议定义，以及协议编解码
+    - 借助`io.ReadFull`读取指定大小的包（该方法会一直读取到指定大小才返回，除非遇到读取错误或EOF）
+    - 先读取Head大小的字节流，解出Head，再根据PackLen和HeadLen计算出Body大小，读取Body大上的字节流
+
+2. `server.go`
+    - 启动网络服务
+    - 把读取到的goim包，再写回给发送方
+
+### 使用说明
+
+```sh
+go build
+network ":8686"
+```
+
+### 测试
+
+>>>使用goim的benchmark/client进行验证
+
+```sh
+go build benchmarks/client
+client 1 1 ":8686"
+```
+
+>>>下图为测试验证截图
+
+![goim协议解码](./img/protocol.png)
