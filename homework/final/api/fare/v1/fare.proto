@@ -7,7 +7,7 @@ import "common/v1/common.proto";
 
 package fare;
 
-option go_package = "github.com/webmin7761/go-school/homework/final/fare;fare";
+option go_package = "github.com/webmin7761/go-school/homework/final/api/fare/v1;fare";
 
 //机票价格服务
 service FareService {

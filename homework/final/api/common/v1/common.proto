@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package common;
 
-option go_package = "github.com/webmin7761/go-school/homework/final/common;common";
+option go_package = "github.com/webmin7761/go-school/homework/final/api/common/v1;common";
 
 enum PassageTypes {
     PT = 0;

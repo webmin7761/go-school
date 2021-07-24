@@ -6,7 +6,7 @@ import "common/v1/common.proto";
 
 package travel;
 
-option go_package = "github.com/webmin7761/go-school/homework/final/travel;travel";
+option go_package = "github.com/webmin7761/go-school/homework/final/api/travel/v1;travel";
 
 service TravelService {
     //旅游推荐
