@@ -22,15 +22,15 @@
 
 ### 业务场景 - 航空机票询价服务（ShoppingService）
 
-- 机票询价接口返回下述三项信息，这三项信息分别由三个不同的接口提供(Shopping)
+- 机票询价接口返回下述三项信息，这三项信息分别由二个服务的三个不同的接口提供(Shopping)
 
-    - 查询票价返回指定航线和日期的票价（Pring）
-    - 返回指定航线前后一周的最低日历(PriceCalendar)
-    - 返回目的地的旅游推荐(TravelQuery)
+    - 查询票价返回指定航线和日期的票价（FareService.Pring）
+    - 返回指定航线前后一周的最低日历(FareService.PriceCalendar)
+    - 返回目的地的旅游推荐(Travel.Query)
 
 - 机票询价接口属于BFF层，聚合其它三个接口数据
 - 查询票价，先查询缓存，未命中，再查询DB，同时给MQ发一条构建缓存的任务
-- 票价缓存JOB，消费MQ中的构建任务，从DB中捞出信息打到Redis中
+- 票价缓存更新JOB，消费MQ中的构建任务，从DB中捞出信息打到Redis中
 
 ### 架构设计
 
@@ -83,6 +83,16 @@ cd cmd\fare
 #生成注入代码
 wire
 go build github.com/webmin7761/go-school/homework/final/cmd/fare
+
+cd cmd\shop
+#生成注入代码
+wire
+go build github.com/webmin7761/go-school/homework/final/cmd/shop
+
+cd cmd\travel
+#生成注入代码
+wire
+go build github.com/webmin7761/go-school/homework/final/cmd/travel
 ```
 
 ### 运行项目
