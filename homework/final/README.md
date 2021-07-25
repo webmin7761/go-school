@@ -34,7 +34,7 @@
 
 ### 架构设计
 
-![架构](https://www.processon.com/view/link/60f6e1695653bb0c960dd6b3)
+![架构](doc/img/架构.png)
 
 ## TODO
 
