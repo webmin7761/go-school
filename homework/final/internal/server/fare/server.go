@@ -1,4 +1,4 @@
-package server
+package fare
 
 import "github.com/google/wire"
 

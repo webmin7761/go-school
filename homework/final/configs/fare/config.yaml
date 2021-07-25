@@ -1,0 +1,22 @@
+server:
+  http:
+    addr: 0.0.0.0:8000
+    timeout: 1s
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 1s
+data:
+  database:
+    driver: sqlite3
+    source: ./foo.db?mode=memory&cache=shared&_fk=1
+cache:
+  connect:
+    driver: redis
+    source: redis://127.0.0.1:6379
+    size: 2
+mq:
+  connect:
+    driver: kafka
+    source: 127.0.0.1:6379
+    size: 2
+    topic: price

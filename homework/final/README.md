@@ -22,11 +22,11 @@
 
 ### 业务场景 - 航空机票询价服务（ShoppingService）
 
-- 机票询价接口返回下述三项信息，这三项信息分别由三个不同的接口提供
+- 机票询价接口返回下述三项信息，这三项信息分别由三个不同的接口提供(Shopping)
 
-    - 查询票价返回指定航线和日期的票价（PringService）
-    - 返回指定航线前后一周的最低日历
-    - 返回目的地的旅游推荐
+    - 查询票价返回指定航线和日期的票价（Pring）
+    - 返回指定航线前后一周的最低日历(PriceCalendar)
+    - 返回目的地的旅游推荐(TravelQuery)
 
 - 机票询价接口属于BFF层，聚合其它三个接口数据
 - 查询票价，先查询缓存，未命中，再查询DB，同时给MQ发一条构建缓存的任务
@@ -44,7 +44,7 @@
 
 3. [X] 表结构设计
 
-4. [x] 缓存更新JOB
+4. [] 缓存更新JOB
 
 5. [x] 测试
 
@@ -70,6 +70,12 @@ kratos proto client fare.proto --proto_path=../../../third_party --proto_path=..
 
 2. 生成对DB的各种操作`ent generate ./ent/schema`
 
+### conf
+
+```sh
+protoc --go_out=. --proto_path=../../third_party -I=. conf.proto
+```
+
 ### 项目编译
 
 ```sh
@@ -79,20 +85,14 @@ wire
 go build github.com/webmin7761/go-school/homework/final/cmd/fare
 ```
 
-## 测试
-
-- [Postman测试用例](test/data/_postman_engineering.json)
-
-## protobuf备忘
+### 运行项目
 
 ```sh
-go get -u github.com/golang/protobuf
-
-go get -u github.com/golang/protobuf/protoc-gen-go
-
-go get -u github.com/lazada/protoc-gen-go-http
-
-go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
-
-protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-http_out=. --proto_path=d:/protobuf -I=. price.proto
+shop -conf ../../configs/shop/config.yaml 
+travel -conf ../../configs/travel/config.yaml
+fare -conf ../../configs/fare/config.yaml
 ```
+
+## 测试
+
+- [Postman测试用例](test/data/go-school-final.postman_collection.json)

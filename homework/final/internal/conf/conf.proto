@@ -8,6 +8,9 @@ import "google/protobuf/duration.proto";
 message Bootstrap {
     Server server = 1;
     Data data = 2;
+    Cache cache = 3;
+    MessageQueue mq = 4;
+    Service service = 5;
 }
 
 message Server {
@@ -31,4 +34,27 @@ message Data {
         string source = 2;
     }
     Database database = 1;
+}
+
+message Cache {
+    message Connect {
+        string driver = 1;
+        string source = 2;
+        int32 size = 3;
+    }
+    Connect connect = 1;
+}
+
+message MessageQueue {
+    message Connect {
+        string driver = 1;
+        string source = 2;
+        int32 size = 3;
+        string topic = 4;
+    }
+    Connect connect = 1;
+}
+
+message Service {
+    map<string, string> ServiceMap = 1;
 }

@@ -1,4 +1,4 @@
-package server
+package travel
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
@@ -7,14 +7,14 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	v1 "github.com/webmin7761/go-school/homework/final/api/fare/v1"
+	v1 "github.com/webmin7761/go-school/homework/final/api/travel/v1"
 	"github.com/webmin7761/go-school/homework/final/internal/conf"
 	"github.com/webmin7761/go-school/homework/final/internal/service"
 	"go.opentelemetry.io/otel/trace"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, tracer trace.TracerProvider, fare *service.FareService) *grpc.Server {
+func NewGRPCServer(c *conf.Server, tracer trace.TracerProvider, travel *service.TravelService) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			middleware.Chain(
@@ -34,6 +34,6 @@ func NewGRPCServer(c *conf.Server, tracer trace.TracerProvider, fare *service.Fa
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterFareServiceServer(srv, fare)
+	v1.RegisterTravelServiceServer(srv, travel)
 	return srv
 }

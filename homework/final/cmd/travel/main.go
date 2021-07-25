@@ -11,12 +11,12 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	v1 "github.com/webmin7761/go-school/homework/final/api/travel/v1"
 	"go.opentelemetry.io/otel/attribute"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"gopkg.in/yaml.v2"
 
 	"github.com/go-kratos/kratos/v2"
-	v1 "github.com/webmin7761/go-school/homework/final/api/fare/v1"
 	"github.com/webmin7761/go-school/homework/final/internal/conf"
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -61,7 +61,7 @@ func tracerProvider(url string) (*tracesdk.TracerProvider, error) {
 		tracesdk.WithBatcher(exp),
 		// Record information about this application in an Resource.
 		tracesdk.WithResource(resource.NewSchemaless(
-			semconv.ServiceNameKey.String(v1.FareService_ServiceDesc.ServiceName),
+			semconv.ServiceNameKey.String(v1.TravelService_ServiceDesc.ServiceName),
 			attribute.String("environment", "development"),
 			attribute.Int64("ID", 1),
 		)),
@@ -105,7 +105,7 @@ func main() {
 		}
 	}(ctx)
 
-	app, cleanup, err := initApp(bc.Server, bc.Data, bc.Cache, bc.Mq, bc.Service, tp, logger)
+	app, cleanup, err := initApp(bc.Server, tp, logger)
 	if err != nil {
 		panic(err)
 	}

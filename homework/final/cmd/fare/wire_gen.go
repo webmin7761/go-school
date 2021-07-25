@@ -9,9 +9,11 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/webmin7761/go-school/homework/final/internal/biz"
+	"github.com/webmin7761/go-school/homework/final/internal/cache/redis"
 	"github.com/webmin7761/go-school/homework/final/internal/conf"
 	"github.com/webmin7761/go-school/homework/final/internal/data"
-	"github.com/webmin7761/go-school/homework/final/internal/server"
+	"github.com/webmin7761/go-school/homework/final/internal/mq/kafka"
+	"github.com/webmin7761/go-school/homework/final/internal/server/fare"
 	"github.com/webmin7761/go-school/homework/final/internal/service"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -19,16 +21,22 @@ import (
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *conf.Server, confData *conf.Data, traceTracerProvider trace.TracerProvider, logger log.Logger) (*kratos.App, func(), error) {
+func initApp(server *conf.Server, confData *conf.Data, cache *conf.Cache, messageQueue *conf.MessageQueue, confService *conf.Service, traceTracerProvider trace.TracerProvider, logger log.Logger) (*kratos.App, func(), error) {
 	dataData, cleanup, err := data.NewData(confData, logger)
 	if err != nil {
 		return nil, nil, err
 	}
 	fareRepo := data.NewFareRepo(dataData, logger)
 	fareUsecase := biz.NewFareUsecase(fareRepo, logger)
-	fareService := service.NewFareService(fareUsecase, logger)
-	httpServer := server.NewHTTPServer(confServer, traceTracerProvider, fareService)
-	grpcServer := server.NewGRPCServer(confServer, traceTracerProvider, fareService)
+	radixRC3, err := redis.NewRedisClient(cache)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	kafkaClient := kafka.NewKafkaClient(messageQueue)
+	fareService := service.NewFareService(fareUsecase, radixRC3, kafkaClient, logger)
+	httpServer := fare.NewHTTPServer(server, traceTracerProvider, fareService)
+	grpcServer := fare.NewGRPCServer(server, traceTracerProvider, fareService)
 	app := newApp(logger, httpServer, grpcServer)
 	return app, func() {
 		cleanup()

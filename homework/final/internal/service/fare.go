@@ -2,20 +2,25 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/webmin7761/go-school/homework/final/api/common/v1"
 	pb "github.com/webmin7761/go-school/homework/final/api/fare/v1"
 	"github.com/webmin7761/go-school/homework/final/internal/biz"
+	"github.com/webmin7761/go-school/homework/final/internal/cache/redis"
+	"github.com/webmin7761/go-school/homework/final/internal/mq/kafka"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 )
 
-func NewFareService(fare *biz.FareUsecase, logger log.Logger) *FareService {
+func NewFareService(fare *biz.FareUsecase, cache *redis.RadixRC3, mq *kafka.KafkaClient, logger log.Logger) *FareService {
 	return &FareService{
-		fare: fare,
-		log:  log.NewHelper(logger),
+		fare:  fare,
+		cache: cache,
+		mq:    mq,
+		log:   log.NewHelper(logger),
 	}
 }
 
@@ -81,6 +86,13 @@ func (s *FareService) Pricing(ctx context.Context, req *pb.PricingRequest) (*pb.
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "PricingFare")
 	defer span.End()
+
+	v, err := s.cache.Get("")
+
+	if v != "" && err == nil {
+		return &pb.PricingResponse{}, nil
+	}
+
 	p, err := s.fare.Pricing(ctx, &biz.Fare{
 		OrgAirport:      req.OrgAirport,
 		ArrAirport:      req.ArrAirport,
@@ -91,6 +103,10 @@ func (s *FareService) Pricing(ctx context.Context, req *pb.PricingRequest) (*pb.
 	if err != nil {
 		return nil, err
 	}
+
+	msg, _ := json.Marshal(req)
+	s.mq.Produce(string(msg))
+
 	return &pb.PricingResponse{
 		Result:         &common.Result{Code: "0"},
 		OrgAirport:     req.OrgAirport,
@@ -98,5 +114,44 @@ func (s *FareService) Pricing(ctx context.Context, req *pb.PricingRequest) (*pb.
 		FlightDatetime: req.FlightDatetime,
 		PassageType:    req.PassageType,
 		Amount:         wrapperspb.Double(p.Amount),
+	}, nil
+}
+
+func (s *FareService) PriceCalendar(ctx context.Context, req *pb.PriceCalendarRequest) (*pb.PriceCalendarResponse, error) {
+	//mock
+	pcs := []*pb.PriceCalendar{}
+	pcs = append(pcs, &pb.PriceCalendar{
+		FlightDatetime: timestamppb.New(req.FlightDatetime.AsTime().AddDate(0, 0, -3)),
+		PassageType:    req.PassageType,
+		Amount:         wrapperspb.Double(300),
+	})
+	pcs = append(pcs, &pb.PriceCalendar{
+		FlightDatetime: timestamppb.New(req.FlightDatetime.AsTime().AddDate(0, 0, -2)),
+		PassageType:    req.PassageType,
+		Amount:         wrapperspb.Double(200),
+	})
+	pcs = append(pcs, &pb.PriceCalendar{
+		FlightDatetime: timestamppb.New(req.FlightDatetime.AsTime().AddDate(0, 0, -1)),
+		PassageType:    req.PassageType,
+		Amount:         wrapperspb.Double(100),
+	})
+	pcs = append(pcs, &pb.PriceCalendar{
+		FlightDatetime: timestamppb.New(req.FlightDatetime.AsTime().AddDate(0, 0, 3)),
+		PassageType:    req.PassageType,
+		Amount:         wrapperspb.Double(1300),
+	})
+	pcs = append(pcs, &pb.PriceCalendar{
+		FlightDatetime: timestamppb.New(req.FlightDatetime.AsTime().AddDate(0, 0, 2)),
+		PassageType:    req.PassageType,
+		Amount:         wrapperspb.Double(1200),
+	})
+	pcs = append(pcs, &pb.PriceCalendar{
+		FlightDatetime: timestamppb.New(req.FlightDatetime.AsTime().AddDate(0, 0, 1)),
+		PassageType:    req.PassageType,
+		Amount:         wrapperspb.Double(1100),
+	})
+	return &pb.PriceCalendarResponse{
+		Result:        &common.Result{Code: "0"},
+		PriceCalendar: pcs,
 	}, nil
 }
