@@ -44,7 +44,7 @@
 
 3. [X] 表结构设计
 
-4. [] 缓存更新JOB
+4. [X] 缓存更新JOB
 
 5. [x] 测试
 
@@ -93,6 +93,10 @@ cd cmd\travel
 #生成注入代码
 wire
 go build github.com/webmin7761/go-school/homework/final/cmd/travel
+
+cd cmd\job
+wire
+go build github.com/webmin7761/go-school/homework/final/cmd/job
 ```
 
 ### 运行项目

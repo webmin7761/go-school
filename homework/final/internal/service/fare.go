@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"strconv"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/webmin7761/go-school/homework/final/api/common/v1"
@@ -87,10 +88,22 @@ func (s *FareService) Pricing(ctx context.Context, req *pb.PricingRequest) (*pb.
 	ctx, span := tr.Start(ctx, "PricingFare")
 	defer span.End()
 
-	v, err := s.cache.Get("")
+	key := genKey(req.OrgAirport, req.ArrAirport, req.FlightDatetime, req.PassageType)
+	v, err := s.cache.Get(key)
 
 	if v != "" && err == nil {
-		return &pb.PricingResponse{}, nil
+		amount, err := strconv.ParseFloat(v, 32)
+		if err != nil {
+			return nil, err
+		}
+		return &pb.PricingResponse{
+			Result:         &common.Result{Code: "0"},
+			OrgAirport:     req.OrgAirport,
+			ArrAirport:     req.ArrAirport,
+			FlightDatetime: req.FlightDatetime,
+			PassageType:    req.PassageType,
+			Amount:         wrapperspb.Double(amount),
+		}, nil
 	}
 
 	p, err := s.fare.Pricing(ctx, &biz.Fare{
@@ -104,17 +117,19 @@ func (s *FareService) Pricing(ctx context.Context, req *pb.PricingRequest) (*pb.
 		return nil, err
 	}
 
-	msg, _ := json.Marshal(req)
-	s.mq.Produce(string(msg))
-
-	return &pb.PricingResponse{
+	res := &pb.PricingResponse{
 		Result:         &common.Result{Code: "0"},
 		OrgAirport:     req.OrgAirport,
 		ArrAirport:     req.ArrAirport,
 		FlightDatetime: req.FlightDatetime,
 		PassageType:    req.PassageType,
 		Amount:         wrapperspb.Double(p.Amount),
-	}, nil
+	}
+
+	msg, _ := json.Marshal(req)
+	s.mq.Produce(string(msg))
+
+	return res, nil
 }
 
 func (s *FareService) PriceCalendar(ctx context.Context, req *pb.PriceCalendarRequest) (*pb.PriceCalendarResponse, error) {

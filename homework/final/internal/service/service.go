@@ -18,13 +18,13 @@ var ShopProviderSet = wire.NewSet(NewShoppingService)
 
 var TravelProviderSet = wire.NewSet(NewTravelService)
 
+var JobProviderSet = wire.NewSet(NewJobService)
+
 type FareService struct {
 	f.UnimplementedFareServiceServer
 
-	log *log.Helper
-
-	fare *biz.FareUsecase
-
+	log   *log.Helper
+	fare  *biz.FareUsecase
 	cache c.Cache
 	mq    m.MessageQueue
 }
@@ -32,8 +32,7 @@ type FareService struct {
 type ShoppingService struct {
 	s.UnimplementedShopServiceServer
 
-	log *log.Helper
-
+	log    *log.Helper
 	fare   f.FareServiceHTTPClient
 	travel t.TravelServiceHTTPClient
 }
@@ -41,4 +40,12 @@ type ShoppingService struct {
 type TravelService struct {
 	t.UnimplementedTravelServiceServer
 	log *log.Helper
+}
+
+type JobService struct {
+	ttl   int
+	fare  *biz.FareUsecase
+	log   *log.Helper
+	cache c.Cache
+	mq    m.MessageQueue
 }
