@@ -6,6 +6,7 @@
 package main
 
 import (
+	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/webmin7761/go-school/homework/final/internal/biz"
 	"github.com/webmin7761/go-school/homework/final/internal/cache/redis"
@@ -18,7 +19,7 @@ import (
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confData *conf.Data, cache *conf.Cache, messageQueue *conf.MessageQueue, logger log.Logger) (func() error, func(), error) {
+func initApp(confData *conf.Data, cache *conf.Cache, messageQueue *conf.MessageQueue, logger log.Logger) (func(context.Context) error, func(), error) {
 	dataData, cleanup, err := data.NewData(confData, logger)
 	if err != nil {
 		return nil, nil, err

@@ -44,9 +44,13 @@
 
 3. [X] 表结构设计
 
-4. [X] 缓存更新JOB
+4. [X] 票价查询实现
 
-5. [x] 测试
+5. [X] 日历和旅游推荐实现
+
+6. [X] 缓存更新JOB
+
+7. [x] 测试
 
 ## 参考
 
@@ -105,6 +109,7 @@ go build github.com/webmin7761/go-school/homework/final/cmd/job
 shop -conf ../../configs/shop/config.yaml 
 travel -conf ../../configs/travel/config.yaml
 fare -conf ../../configs/fare/config.yaml
+job -conf ../../configs/job/config.yaml
 ```
 
 ## 测试

@@ -51,6 +51,7 @@ message MessageQueue {
         string source = 2;
         int32 size = 3;
         string topic = 4;
+        string group = 5;
     }
     Connect connect = 1;
 }

@@ -2,13 +2,16 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
+	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
 
 	"github.com/webmin7761/go-school/homework/final/internal/conf"
@@ -29,9 +32,9 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(service *service.JobService) func() error {
-	return func() error {
-		service.UpdateCache(context.Background())
+func newApp(service *service.JobService) func(ctx context.Context) error {
+	return func(ctx context.Context) error {
+		service.UpdateCache(ctx)
 		return nil
 	}
 }
@@ -65,15 +68,46 @@ func main() {
 		defer cancel()
 	}(ctx)
 
-	// run, cleanup, err := initApp(bc.Server, bc.Data, bc.Cache, bc.Mq, bc.Service, logger)
 	run, cleanup, err := initApp(bc.Data, bc.Cache, bc.Mq, logger)
 	if err != nil {
 		panic(err)
 	}
 	defer cleanup()
 
-	// start and wait for stop signal
-	if err := run(); err != nil {
-		panic(err)
+	g, ctx := errgroup.WithContext(ctx)
+	g.Go(func() error {
+		return run(ctx)
+	})
+
+	g.Go(func() error {
+		return sigProcess()(ctx)
+	})
+
+	if err := g.Wait(); err != nil {
+		logger.Log(log.LevelError, err)
+	}
+}
+
+func sigProcess(sig ...os.Signal) func(context.Context) error {
+	return func(ctx context.Context) error {
+
+		if len(sig) == 0 {
+			sig = append(sig, os.Interrupt)
+		}
+
+		done := make(chan os.Signal, len(sig))
+		signal.Notify(done, sig...)
+
+		var err error
+		select {
+		case <-ctx.Done():
+		case s := <-done:
+			err = errors.New("main: " + s.String())
+		}
+
+		signal.Stop(done)
+		close(done)
+
+		return err
 	}
 }

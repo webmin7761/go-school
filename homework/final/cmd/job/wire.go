@@ -4,6 +4,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"github.com/webmin7761/go-school/homework/final/internal/biz"
@@ -15,7 +17,7 @@ import (
 )
 
 // initApp init kratos application.
-func initApp(*conf.Data, *conf.Cache, *conf.MessageQueue, log.Logger) (func() error, func(), error) {
+func initApp(*conf.Data, *conf.Cache, *conf.MessageQueue, log.Logger) (func(context.Context) error, func(), error) {
 	panic(wire.Build(
 		cache.ProviderSet,
 		data.ProviderSet,
